@@ -3,6 +3,8 @@
 	"version": "0.1.0",
 	"private": true,
 	"dependencies": {
+		"@material-ui/core": "^4.11.3",
+		"@material-ui/icons": "^4.11.2",
 		"@testing-library/jest-dom": "^5.11.9",
 		"@testing-library/react": "^11.2.5",
 		"@testing-library/user-event": "^12.8.3",
@@ -43,7 +45,11 @@
 	},
 	"xo": {
 		"extends": "xo-react",
-		"envs": ["browser", "es2021", "jest"],
+		"envs": [
+			"browser",
+			"es2021",
+			"jest"
+		],
 		"rules": {
 			"unicorn/filename-case": [
 				"error",
@@ -57,7 +63,10 @@
 			"import/no-unassigned-import": [
 				"error",
 				{
-					"allow": ["@testing-library/jest-dom", "**/*.css"]
+					"allow": [
+						"@testing-library/jest-dom",
+						"**/*.css"
+					]
 				}
 			]
 		}
