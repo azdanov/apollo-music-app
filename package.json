@@ -51,6 +51,7 @@
 			"jest"
 		],
 		"rules": {
+			"node/file-extension-in-import": "off",
 			"unicorn/filename-case": [
 				"error",
 				{

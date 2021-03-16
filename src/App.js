@@ -1,10 +1,24 @@
+import {Grid} from '@material-ui/core';
 import React from 'react';
+import Header from './components/Header.js';
+import SongAdd from './components/SongAdd.js';
+import SongList from './components/SongList.js';
+import SongPlayer from './components/SongPlayer.js';
 
 const App = () => {
 	return (
-		<div>
-			Hey
-		</div>
+		<>
+			<Header/>
+			<Grid container spacing={3}>
+				<Grid item xs={12} md={7}>
+					<SongAdd/>
+					<SongList/>
+				</Grid>
+				<Grid item xs={12} md={5}>
+					<SongPlayer/>
+				</Grid>
+			</Grid>
+		</>
 	);
 };
 
