@@ -41,6 +41,7 @@
 		"eslint-config-xo-react": "^0.24.0",
 		"eslint-plugin-react": "^7.22.0",
 		"eslint-plugin-react-hooks": "^4.2.0",
+		"webstorm-xo-eslint-bridge": "^6.8.0",
 		"xo": "^0.38.2"
 	},
 	"xo": {

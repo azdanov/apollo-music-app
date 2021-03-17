@@ -1,4 +1,4 @@
-import {AppBar, Toolbar, Typography, makeStyles} from '@material-ui/core';
+import {AppBar, makeStyles, Toolbar, Typography} from '@material-ui/core';
 import {AudiotrackSharp} from '@material-ui/icons';
 import React from 'react';
 
