@@ -1,11 +1,11 @@
 import React from 'react';
-import SongQueue from './SongQueue.js';
+import SongPlaylist from './SongPlaylist.js';
 
 const SongPlayer = () => {
 	return (
 		<>
 			SongPlayer
-			<SongQueue/>
+			<SongPlaylist/>
 		</>
 	);
 };

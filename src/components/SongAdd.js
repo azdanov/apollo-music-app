@@ -14,7 +14,8 @@ import React from 'react';
 const useStyles = makeStyles(theme => ({
 	container: {
 		display: 'flex',
-		alignItems: 'center'
+		alignItems: 'center',
+		margin: theme.spacing(1)
 	},
 	urlInput: {
 		margin: theme.spacing(1)
