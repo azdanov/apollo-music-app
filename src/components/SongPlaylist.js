@@ -1,4 +1,4 @@
-import {Avatar, IconButton, makeStyles, Typography} from '@material-ui/core';
+import {Avatar, IconButton, makeStyles, Typography, useMediaQuery} from '@material-ui/core';
 import {Delete} from '@material-ui/icons';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -54,6 +54,12 @@ PlaylistItem.propTypes = {
 };
 
 const SongPlaylist = () => {
+	const mediumPlus = useMediaQuery(theme => theme.breakpoints.up('md'));
+
+	if (!mediumPlus) {
+		return null;
+	}
+
 	const song = {
 		artist: 'The Midnight',
 		title: '\'Ghost in Your Stereo\' (Official Lyric Video)',

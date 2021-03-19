@@ -6,7 +6,7 @@ import {
 	DialogTitle,
 	InputAdornment,
 	makeStyles,
-	TextField
+	TextField, useMediaQuery
 } from '@material-ui/core';
 import {Link} from '@material-ui/icons';
 import React from 'react';
@@ -34,6 +34,7 @@ const useStyles = makeStyles(theme => ({
 const SongAdd = () => {
 	const classes = useStyles();
 	const [dialog, setDialog] = React.useState(false);
+	const smallPlus = useMediaQuery(theme => theme.breakpoints.up('sm'));
 
 	function handleCloseDialog() {
 		setDialog(false);
@@ -88,7 +89,7 @@ const SongAdd = () => {
 			/>
 			<Button
 				className={classes.songAddButton}
-				variant="outlined"
+				variant={smallPlus ? 'outlined' : 'contained'}
 				color="primary"
 				onClick={() => setDialog(true)}
 			>
