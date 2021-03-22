@@ -1,16 +1,11 @@
+import {useQuery} from '@apollo/client';
 import {CircularProgress} from '@material-ui/core';
 import React from 'react';
+import {GET_SONGS} from '../graphql/queries.js';
 import Song from './Song.js';
 
 const SongList = () => {
-	const loading = false;
-
-	const song = {
-		artist: 'The Midnight',
-		title: '\'Ghost in Your Stereo\' (Official Lyric Video)',
-		thumbnail:
-			'https://i.ytimg.com/an_webp/xo3yRQgggwY/mqdefault_6s.webp?du=3000&sqp=CPi204IG&rs=AOn4CLDtY5G7IVvWCTkR23B0j3ps7UvXlg'
-	};
+	const {data, loading, error} = useQuery(GET_SONGS);
 
 	if (loading) {
 		return (
@@ -27,10 +22,14 @@ const SongList = () => {
 		);
 	}
 
+	if (error) {
+		return <div>Error getting songs list</div>;
+	}
+
 	return (
 		<>
-			{Array.from({length: 10}, () => song).map((song, index) => (
-				<Song key={index} {...song}/>
+			{data.songs.map(song => (
+				<Song key={song.id} {...song}/>
 			))}
 		</>
 	);
