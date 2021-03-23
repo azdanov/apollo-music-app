@@ -1,3 +1,4 @@
+import {useMutation} from '@apollo/client';
 import {
 	Button,
 	Dialog,
@@ -14,6 +15,7 @@ import React from 'react';
 import ReactPlayer from 'react-player';
 import SoundCloudPlayer from 'react-player/lib/players/SoundCloud';
 import YouTubePlayer from 'react-player/lib/players/YouTube';
+import {ADD_SONG} from '../graphql/mutations.js';
 
 const useStyles = makeStyles(theme => ({
 	container: {
@@ -58,18 +60,21 @@ function getSoundCloudInfo(player) {
 	});
 }
 
+const initialSong = {
+	title: '',
+	duration: 0,
+	thumbnail: '',
+	artist: '',
+	url: ''
+};
+
 const SongAdd = () => {
 	const classes = useStyles();
+	const [addSong, {error}] = useMutation(ADD_SONG);
 	const [url, setUrl] = React.useState('');
 	const [dialog, setDialog] = React.useState(false);
 	const [playable, setPlayable] = React.useState(false);
-	const [song, setSong] = React.useState({
-		title: '',
-		duration: 0,
-		thumbnail: '',
-		artist: '',
-		url: ''
-	});
+	const [song, setSong] = React.useState(initialSong);
 	const smallPlus = useMediaQuery(theme => theme.breakpoints.up('sm'));
 
 	React.useEffect(() => {
@@ -101,13 +106,34 @@ const SongAdd = () => {
 		}));
 	}
 
+	async function handleAddSong() {
+		const {url, thumbnail, duration, title, artist} = song;
+
+		try {
+			await addSong({
+				variables: {
+					url: url.length > 0 ? url : null,
+					thumbnail: thumbnail.length > 0 ? thumbnail : null,
+					duration: duration > 0 ? duration : null,
+					title: title.length > 0 ? title : null,
+					artist: artist.length > 0 ? artist : null
+				}
+			});
+			handleCloseDialog();
+			setSong(initialSong);
+			setUrl('');
+		} catch (error) {
+			console.error('Error adding song', error);
+		}
+	}
+
+	function handleError(field) {
+		return error?.graphQLErrors[0].extensions.path.includes(field);
+	}
+
 	return (
 		<div className={classes.container}>
-			<Dialog
-				className={classes.dialog}
-				open={dialog}
-				onClose={handleCloseDialog}
-			>
+			<Dialog className={classes.dialog} open={dialog} onClose={handleCloseDialog}>
 				<DialogTitle>Edit Song</DialogTitle>
 				<DialogContent>
 					<img
@@ -122,6 +148,8 @@ const SongAdd = () => {
 						name="title"
 						label="Title"
 						value={song.title}
+						error={handleError('title')}
+						helperText={handleError('title') && 'Field is required'}
 						onChange={handleChangeSong}
 					/>
 					<TextField
@@ -130,6 +158,8 @@ const SongAdd = () => {
 						name="artist"
 						label="Artist"
 						value={song.artist}
+						error={handleError('artist')}
+						helperText={handleError('artist') && 'Field is required'}
 						onChange={handleChangeSong}
 					/>
 					<TextField
@@ -138,6 +168,8 @@ const SongAdd = () => {
 						name="thumbnail"
 						label="Thumbnail"
 						value={song.thumbnail}
+						error={handleError('thumbnail')}
+						helperText={handleError('thumbnail') && 'Field is required'}
 						onChange={handleChangeSong}
 					/>
 				</DialogContent>
@@ -145,7 +177,7 @@ const SongAdd = () => {
 					<Button color="default" onClick={handleCloseDialog}>
 						Cancel
 					</Button>
-					<Button color="primary" variant="contained">
+					<Button color="primary" variant="contained" onClick={handleAddSong}>
 						Save
 					</Button>
 				</DialogActions>
