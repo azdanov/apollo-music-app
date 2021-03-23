@@ -1,11 +1,11 @@
-import {useQuery} from '@apollo/client';
+import {useSubscription} from '@apollo/client';
 import {CircularProgress} from '@material-ui/core';
 import React from 'react';
-import {GET_SONGS} from '../graphql/queries.js';
+import {GET_SONGS_SUB} from '../graphql/subscriptions.js';
 import Song from './Song.js';
 
 const SongList = () => {
-	const {data, loading, error} = useQuery(GET_SONGS);
+	const {data, loading, error} = useSubscription(GET_SONGS_SUB);
 
 	if (loading) {
 		return (
