@@ -1,7 +1,8 @@
 import {Card, CardActions, CardContent, CardMedia, IconButton, makeStyles, Typography} from '@material-ui/core';
-import {PlayArrow, PlaylistAdd} from '@material-ui/icons';
+import {Pause, PlayArrow, PlaylistAdd} from '@material-ui/icons';
 import PropTypes from 'prop-types';
 import React from 'react';
+import {SongContext} from '../App.js';
 
 const useStyles = makeStyles(theme => ({
 	container: {
@@ -23,30 +24,38 @@ const useStyles = makeStyles(theme => ({
 	}
 }));
 
-const Song = ({artist, title, thumbnail}) => {
+const Song = ({song}) => {
 	const classes = useStyles();
+
+	const {state, dispatch} = React.useContext(SongContext);
+	const [isPlaying, setIsPlaying] = React.useState(false);
+
+	React.useEffect(() => {
+		const isSongPlaying = song.id === state.song.id && state.isPlaying;
+		setIsPlaying(isSongPlaying);
+	}, [song.id, state.isPlaying, state.song.id]);
+
+	function handleTogglePlay() {
+		dispatch({type: 'SET_SONG', payload: {song}});
+		dispatch(state.isPlaying ? {type: 'PAUSE_SONG'} : {type: 'PLAY_SONG'});
+	}
 
 	return (
 		<Card className={classes.container}>
 			<div className={classes.songInfoContainer}>
-				<CardMedia image={thumbnail} className={classes.thumbnail}/>
+				<CardMedia image={song.thumbnail} className={classes.thumbnail}/>
 				<div className={classes.songInfo}>
 					<CardContent>
 						<Typography gutterBottom variant="h5" component="h2">
-							{title}
+							{song.title}
 						</Typography>
-						<Typography
-							gutterBottom
-							variant="body1"
-							component="p"
-							color="textSecondary"
-						>
-							{artist}
+						<Typography gutterBottom variant="body1" component="p" color="textSecondary">
+							{song.artist}
 						</Typography>
 					</CardContent>
 					<CardActions>
-						<IconButton size="small" color="primary">
-							<PlayArrow/>
+						<IconButton size="small" color="primary" onClick={handleTogglePlay}>
+							{isPlaying ? <Pause/> : <PlayArrow/>}
 						</IconButton>
 						<IconButton size="small" color="primary">
 							<PlaylistAdd/>
@@ -59,9 +68,12 @@ const Song = ({artist, title, thumbnail}) => {
 };
 
 Song.propTypes = {
-	artist: PropTypes.string.isRequired,
-	thumbnail: PropTypes.string.isRequired,
-	title: PropTypes.string.isRequired
+	song: PropTypes.shape({
+		id: PropTypes.string.isRequired,
+		artist: PropTypes.string.isRequired,
+		thumbnail: PropTypes.string.isRequired,
+		title: PropTypes.string.isRequired
+	}).isRequired
 };
 
 export default Song;

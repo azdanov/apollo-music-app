@@ -1,16 +1,32 @@
-import {Grid, useMediaQuery, Hidden} from '@material-ui/core';
+import {Grid, Hidden, useMediaQuery} from '@material-ui/core';
 import React from 'react';
 import Header from './components/Header.js';
 import SongAdd from './components/SongAdd.js';
 import SongList from './components/SongList.js';
 import SongPlayer from './components/SongPlayer.js';
+import {songReducer} from './reducers.js';
+
+export const SongContext = React.createContext({
+	song: {
+		id: 'b67719a1-246c-4a7b-8df7-8e75b051f69b',
+		artist: 'Deniro Farrar',
+		title: 'King feat. Trent the HOOLiGAN (Official Video)',
+		thumbnail: 'https://i.ytimg.com/vi/YLG7jMROoQE/hq720.jpg?sqp=-oaymwEcCNAFEJQDSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLBviTCJ1QNdIuTh4t1mmAUEPE717Q',
+		url: 'https://www.youtube.com/watch?v=YLG7jMROoQE',
+		duration: 250
+	},
+	isPlaying: false
+});
 
 const App = () => {
+	const initialSongState = React.useContext(SongContext);
+	const [state, dispatch] = React.useReducer(songReducer, initialSongState);
+
 	const smallPlus = useMediaQuery(theme => theme.breakpoints.up('sm'));
 	const mediumPlus = useMediaQuery(theme => theme.breakpoints.up('md'));
 
 	return (
-		<>
+		<SongContext.Provider value={{state, dispatch}}>
 			<Hidden only="xs">
 				<Header/>
 			</Hidden>
@@ -32,7 +48,7 @@ const App = () => {
 					<SongPlayer/>
 				</Grid>
 			</Grid>
-		</>
+		</SongContext.Provider>
 	);
 };
 

@@ -29,7 +29,7 @@ const SongList = () => {
 	return (
 		<>
 			{data.songs.map(song => (
-				<Song key={song.id} {...song}/>
+				<Song key={song.id} song={song}/>
 			))}
 		</>
 	);
