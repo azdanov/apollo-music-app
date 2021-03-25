@@ -25,8 +25,10 @@ const App = () => {
 	const smallPlus = useMediaQuery(theme => theme.breakpoints.up('sm'));
 	const mediumPlus = useMediaQuery(theme => theme.breakpoints.up('md'));
 
+	const songState = React.useMemo(() => ({state, dispatch}), [state]);
+
 	return (
-		<SongContext.Provider value={{state, dispatch}}>
+		<SongContext.Provider value={songState}>
 			<Hidden only="xs">
 				<Header/>
 			</Hidden>

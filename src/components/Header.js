@@ -16,7 +16,7 @@ const Header = () => {
 			<Toolbar>
 				<AudiotrackSharp/>
 				<Typography className={classes.title} variant="h6" component="h1">
-					Music App
+					Apollo Music App
 				</Typography>
 			</Toolbar>
 		</AppBar>
