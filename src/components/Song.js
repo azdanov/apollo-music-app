@@ -1,8 +1,10 @@
+import {useMutation} from '@apollo/client';
 import {Card, CardActions, CardContent, CardMedia, IconButton, makeStyles, Typography} from '@material-ui/core';
 import {Pause, PlayArrow, PlaylistAdd} from '@material-ui/icons';
 import PropTypes from 'prop-types';
 import React from 'react';
 import {SongContext} from '../App.js';
+import {ADD_OR_REMOVE_FROM_PLAYLIST} from '../graphql/mutations.js';
 
 const useStyles = makeStyles(theme => ({
 	container: {
@@ -27,6 +29,12 @@ const useStyles = makeStyles(theme => ({
 const Song = ({song}) => {
 	const classes = useStyles();
 
+	const [addOrRemoveFromPlaylist] = useMutation(ADD_OR_REMOVE_FROM_PLAYLIST, {
+		onCompleted: data => {
+			localStorage.setItem('playlist', JSON.stringify(data.addOrRemoveFromPlaylist));
+		}
+	});
+
 	const {state, dispatch} = React.useContext(SongContext);
 	const [isPlaying, setIsPlaying] = React.useState(false);
 
@@ -38,6 +46,10 @@ const Song = ({song}) => {
 	function handleTogglePlay() {
 		dispatch({type: 'SET_SONG', payload: {song}});
 		dispatch(state.isPlaying ? {type: 'PAUSE_SONG'} : {type: 'PLAY_SONG'});
+	}
+
+	function handleAddOrRemoveFromPlaylist() {
+		addOrRemoveFromPlaylist({variables: {input: {...song, __typename: 'Song'}}});
 	}
 
 	return (
@@ -57,7 +69,7 @@ const Song = ({song}) => {
 						<IconButton size="small" color="primary" onClick={handleTogglePlay}>
 							{isPlaying ? <Pause/> : <PlayArrow/>}
 						</IconButton>
-						<IconButton size="small" color="primary">
+						<IconButton size="small" color="primary" onClick={handleAddOrRemoveFromPlaylist}>
 							<PlaylistAdd/>
 						</IconButton>
 					</CardActions>

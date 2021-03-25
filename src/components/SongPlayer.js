@@ -1,7 +1,9 @@
+import {useQuery} from '@apollo/client';
 import {Card, CardContent, CardMedia, IconButton, makeStyles, Slider, Typography} from '@material-ui/core';
 import {Pause, PlayArrow, SkipNext, SkipPrevious} from '@material-ui/icons';
 import React from 'react';
 import {SongContext} from '../App.js';
+import {GET_PLAYLIST} from '../graphql/queries';
 import SongPlaylist from './SongPlaylist.js';
 
 const useStyles = makeStyles(theme => ({
@@ -33,6 +35,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const SongPlayer = () => {
+	const {data} = useQuery(GET_PLAYLIST);
 	const {state, dispatch} = React.useContext(SongContext);
 	const classes = useStyles();
 
@@ -74,7 +77,7 @@ const SongPlayer = () => {
 				</div>
 				<CardMedia className={classes.thumbnail} image={state.song.thumbnail}/>
 			</Card>
-			<SongPlaylist/>
+			<SongPlaylist playlist={data.playlist}/>
 		</>
 	);
 };

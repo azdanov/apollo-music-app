@@ -1,7 +1,9 @@
+import {useMutation} from '@apollo/client';
 import {Avatar, IconButton, makeStyles, Typography, useMediaQuery} from '@material-ui/core';
 import {Delete} from '@material-ui/icons';
 import PropTypes from 'prop-types';
 import React from 'react';
+import {ADD_OR_REMOVE_FROM_PLAYLIST} from '../graphql/mutations.js';
 
 const useStyles = makeStyles({
 	avatar: {
@@ -26,21 +28,31 @@ const useStyles = makeStyles({
 	}
 });
 
-const PlaylistItem = ({artist, title, thumbnail}) => {
+const PlaylistItem = song => {
 	const classes = useStyles();
+
+	const [addOrRemoveFromPlaylist] = useMutation(ADD_OR_REMOVE_FROM_PLAYLIST, {
+		onCompleted: data => {
+			localStorage.setItem('playlist', JSON.stringify(data.addOrRemoveFromPlaylist));
+		}
+	});
+
+	function handleAddOrRemoveFromPlaylist() {
+		addOrRemoveFromPlaylist({variables: {input: {...song, __typename: 'Song'}}});
+	}
 
 	return (
 		<div className={classes.container}>
-			<Avatar src={thumbnail} alt="Song thumbnail" className={classes.avatar}/>
+			<Avatar src={song.thumbnail} alt="Song thumbnail" className={classes.avatar}/>
 			<div className={classes.songInfoContainer}>
 				<Typography variant="subtitle2" className={classes.text}>
-					{title}
+					{song.title}
 				</Typography>
 				<Typography variant="body2" className={classes.text}>
-					{artist}
+					{song.artist}
 				</Typography>
 			</div>
-			<IconButton>
+			<IconButton onClick={handleAddOrRemoveFromPlaylist}>
 				<Delete color="error"/>
 			</IconButton>
 		</div>
@@ -48,35 +60,42 @@ const PlaylistItem = ({artist, title, thumbnail}) => {
 };
 
 PlaylistItem.propTypes = {
-	artist: PropTypes.string.isRequired,
-	thumbnail: PropTypes.string.isRequired,
-	title: PropTypes.string.isRequired
+	song: PropTypes.shape({
+		id: PropTypes.string.isRequired,
+		artist: PropTypes.string.isRequired,
+		thumbnail: PropTypes.string.isRequired,
+		title: PropTypes.string.isRequired
+	})
 };
 
-const SongPlaylist = () => {
+const SongPlaylist = ({playlist}) => {
 	const mediumPlus = useMediaQuery(theme => theme.breakpoints.up('md'));
 
 	if (!mediumPlus) {
 		return null;
 	}
 
-	const song = {
-		artist: 'The Midnight',
-		title: '\'Ghost in Your Stereo\' (Official Lyric Video)',
-		thumbnail:
-			'https://i.ytimg.com/an_webp/xo3yRQgggwY/mqdefault_6s.webp?du=3000&sqp=CPi204IG&rs=AOn4CLDtY5G7IVvWCTkR23B0j3ps7UvXlg'
-	};
-
 	return (
 		<div style={{margin: '10px 0'}}>
 			<Typography color="textSecondary" variant="button">
-				Queue (5)
+				Queue ({playlist.length})
 			</Typography>
-			{Array.from({length: 5}, () => song).map((song, index) => (
-				<PlaylistItem key={index} {...song}/>
+			{playlist.map(song => (
+				<PlaylistItem key={song.id} {...song}/>
 			))}
 		</div>
 	);
+};
+
+SongPlaylist.propTypes = {
+	playlist: PropTypes.arrayOf(
+		PropTypes.shape({
+			id: PropTypes.string.isRequired,
+			artist: PropTypes.string.isRequired,
+			thumbnail: PropTypes.string.isRequired,
+			title: PropTypes.string.isRequired
+		})
+	).isRequired
 };
 
 export default SongPlaylist;

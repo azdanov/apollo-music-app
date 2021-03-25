@@ -21,3 +21,9 @@ export const ADD_SONG = gql`
 		}
 	}
 `;
+
+export const ADD_OR_REMOVE_FROM_PLAYLIST = gql`
+	mutation addOrRemoveFromPlaylist($input: SongInput!) {
+		addOrRemoveFromPlaylist(input: $input) @client
+	}
+`;

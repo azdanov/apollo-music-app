@@ -12,3 +12,16 @@ export const GET_SONGS = gql`
 		}
 	}
 `;
+
+export const GET_PLAYLIST = gql`
+	query getPlaylist {
+		playlist @client {
+			id
+			duration
+			title
+			artist
+			thumbnail
+			url
+		}
+	}
+`;
